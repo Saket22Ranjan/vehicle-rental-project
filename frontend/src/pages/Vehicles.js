@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
 function Vehicles() {
     const [vehicles, setVehicles] = useState([]);
+    const navigate = useNavigate();   // ✅ Hook must be here (top level)
 
     // Fetch vehicles from backend
     useEffect(() => {
@@ -10,46 +12,58 @@ function Vehicles() {
             .then(res => setVehicles(res.data))
             .catch(err => console.log(err));
     }, []);
-    
-    const handleRent = async (vehicle) => {
-    const hours = prompt("Enter number of hours:");
-
-    if (!hours) return;
-
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    const res = await API.post("/bookings/rent", {
-        userId: user._id,
-        vehicleId: vehicle._id,
-        hours: Number(hours)
-    });
-
-    alert(`Booked Successfully! Total Price ₹${res.data.totalPrice}`);
-};
-
 
     return (
         <div style={{ padding: 30 }}>
             <h2>Available Vehicles</h2>
+            <button
+    onClick={() => navigate("/bookings")}
+    style={{
+        marginBottom: 20,
+        padding: "8px 15px",
+        backgroundColor: "green",
+        color: "white",
+        border: "none",
+        borderRadius: 4
+    }}
+>
+    View My Bookings
+</button>
+
 
             {vehicles.length === 0 ? (
                 <p>No vehicles available</p>
-) : (
-    vehicles.map(v => (
-        <div key={v._id} style={{
-            border: "1px solid gray",
-            padding: 15,
-            marginBottom: 10
-        }}>
-            <h3>{v.name}</h3>
-            <p>Type: {v.type}</p>
-            <p>Price: ₹{v.pricePerHour} / hour</p>
-            <p>{v.description}</p>
-            <button onClick={() => handleRent(v)}>
-                Rent Now
-            </button>
-        </div>
-    ))
+            ) : (
+                vehicles.map(v => (
+                    <div
+                        key={v._id}
+                        style={{
+                            border: "1px solid #ccc",
+                            padding: 15,
+                            marginBottom: 10,
+                            borderRadius: 5
+                        }}
+                    >
+                        <h3>{v.name}</h3>
+                        <p><strong>Type:</strong> {v.type}</p>
+                        <p><strong>Price:</strong> ₹{v.pricePerHour} / hour</p>
+                        <p>{v.description}</p>
+
+                        <button
+                            onClick={() => navigate(`/rent/${v._id}`)}
+                            style={{
+                                padding: "8px 15px",
+                                backgroundColor: "#007bff",
+                                color: "white",
+                                border: "none",
+                                cursor: "pointer",
+                                borderRadius: 4
+                            }}
+                        >
+                            Rent Now
+                        </button>
+                    </div>
+                ))
             )}
         </div>
     );
