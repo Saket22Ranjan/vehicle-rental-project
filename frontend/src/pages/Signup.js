@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import API from "../services/api";
+import axios from "axios"; // ✅ added
+
+// ✅ FIX: create API with correct backend URL
+const API = axios.create({
+  baseURL: "http://localhost:5000/api",
+});
 
 function Signup() {
   const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
@@ -13,7 +18,6 @@ function Signup() {
   };
 
   // Backend: POST /api/users/signup — body: { name, phone, email }
-  // Returns the user object (finds or creates by phone/email)
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -24,10 +28,15 @@ function Signup() {
         phone: formData.phone,
         email: formData.email,
       });
+
       localStorage.setItem("user", JSON.stringify(res.data));
       navigate("/vehicles");
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.error || "Signup failed. Please try again.");
+      setError(
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Signup failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -55,7 +64,6 @@ function Signup() {
       />
 
       <div className="login-container">
-        {/* LEFT PANEL */}
         <div className="login-left">
           <div className="login-brand">RIDE<span>X</span></div>
           <div>
@@ -82,13 +90,9 @@ function Signup() {
           </div>
         </div>
 
-        {/* RIGHT PANEL */}
         <div className="login-right">
           <div className="tab-switch">
-            <button
-              className="tab-btn"
-              onClick={() => navigate("/login")}
-            >
+            <button className="tab-btn" onClick={() => navigate("/login")}>
               Sign In
             </button>
             <button className="tab-btn active">Sign Up</button>
@@ -116,31 +120,30 @@ function Signup() {
               <input
                 className="form-input"
                 name="name"
-                placeholder="Saket Ranjan"
                 value={formData.name}
                 onChange={handleChange}
                 required
               />
             </div>
+
             <div className="form-group">
               <label className="form-label">Phone Number</label>
               <input
                 className="form-input"
                 name="phone"
                 type="tel"
-                placeholder="+91 98765 43210"
                 value={formData.phone}
                 onChange={handleChange}
                 required
               />
             </div>
+
             <div className="form-group">
               <label className="form-label">Email Address</label>
               <input
                 className="form-input"
                 name="email"
                 type="email"
-                placeholder="you@example.com"
                 value={formData.email}
                 onChange={handleChange}
                 required
@@ -151,27 +154,14 @@ function Signup() {
               type="submit"
               className="form-submit"
               disabled={loading}
-              style={{ opacity: loading ? 0.7 : 1 }}
             >
               {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT →"}
             </button>
           </form>
 
-          <p
-            style={{
-              textAlign: "center",
-              marginTop: "1.5rem",
-              fontSize: "0.85rem",
-              color: "var(--gray-400)",
-            }}
-          >
+          <p style={{ textAlign: "center", marginTop: "1.5rem" }}>
             Already have an account?{" "}
-            <Link
-              to="/login"
-              style={{ color: "var(--orange)", textDecoration: "none" }}
-            >
-              Sign In
-            </Link>
+            <Link to="/login">Sign In</Link>
           </p>
         </div>
       </div>
