@@ -183,7 +183,8 @@ Homepage → Vehicles → Rent Now → Login → Select Hours → Confirm Bookin
 2. Create your branch (`git checkout -b feature/NewFeature`)  
 3. Commit changes (`git commit -m 'Add feature'`)  
 4. Push to branch (`git push origin feature/NewFeature`)  
-5. Open a Pull Request  
+5. Open a Pull Request
+6. Now your projectwill be live.
 
 ---
 
